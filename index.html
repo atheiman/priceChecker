@@ -6,13 +6,26 @@
 
 <style>
 html,body {
-        height:100%;
-        font-family:sans;
-        font-size:100%;
-        background-color:#bbb;
-        color:#111;
+	height:100%;
+	font-family:sans;
+	font-size:100%;
+	background-color:#bbb;
+	color:#111;
 }
-
+table {
+	border-collapse:collapse;
+	text-align:left;
+	margin-bottom: 40px;
+}
+td {
+	margin:5px;
+}
+#siteTitle {
+	margin:25px;
+}
+.prodIdInput {
+	width:calc(100% - 5px);
+}
 .large {font-size:115%;}
 .larger {font-size:130%;}
 .largest {font-size:145%;}
@@ -22,21 +35,63 @@ html,body {
 .red {color:#b11;}
 .center {text-align:center;}
 .right {float:right;}
+.bold {font-weight:bold;}
 </style>
 
 <script>
-
+function initiateGlobals() {
+	myBody = document.getElementById('myBody');
+	header = document.getElementById('header');
+	siteTitle = document.getElementById('siteTitle');
+	mainSection = document.getElementById('mainSection');
+	prodIdInput = document.getElementById('prodIdInput');
+	prodName = document.getElementById('prodName');
+	prodPrice = document.getElementById('prodPrice');
+	myBody = document.getElementById('myBody');
+}
+function getProdInfo(prodId) {
+	console.log("getProdInfo() starting");
+	if (prodIdInput.value.length() < 5) {
+		return;
+	}
+	var xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			//prodIdInput.value=xmlhttp.responseText;
+			JSON.parse("xmlhttp.responseText);
+		}
+	}
+	xmlhttp.open("GET","priceChecker.php?itemId="+prodId,true);
+	xmlhttp.send();
+}
 </script>
 
 </head>
 
 
 
-<body id="myBody">
+<body id="myBody" onload="initiateGlobals()">
 
 <div id='header'>
-        <div id="siteTitle">Amazon Price Checker</div>
+	<div id="siteTitle" class="largest bold">Amazon Price Checker</div>
 </div>
+
+
+<table border='1' cellpadding='5'>
+	<tr>
+		<th>Input Amazon Product Id</th>
+		<th style="width:300px;">Product Name</th>
+		<th>Product Price</th>
+	</tr>
+	<tr>
+		<td><input type="text" id="prodIdInput" class="prodIdInput" placeholder="Amazon Product Id" onchange="getProdInfo(this.value);"></td>
+		<td id="prodName"></td>
+		<td id="prodPrice"></td>
+	</tr>
+</table>
+
+	
+</table>
 
 </body>
 
