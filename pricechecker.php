@@ -5,7 +5,7 @@
 //ini_set('display_errors', 1);
 
 
-if (!isset($_GET['itemId']) or $_GET['itemId'] == "") {
+if (!isset($_GET['itemId']) or strlen($_GET['itemId']) != 10) {
 	die("ERROR - No 'itemId' specified in GET paramaters. Expected 10 character alphanumeric string.");
 }
 
@@ -18,11 +18,18 @@ $cacheDir = "cache";
 if (file_exists($cacheDir)) {  // if cacheDir exist
 	if (file_exists($cacheDir."/".$itemId)) {  // if file named itemId exists
 		$dateStrModified = filemtime($cacheDir."/".$itemId);
-		$timeTooOldInSec = 1;
+		$timeTooOldInSec = 60*5;
 		if ((time() - $timeTooOldInSec) < $dateStrModified) {  // if datemodified is within last x seconds
-			// file last modified recent enough, return values from the file
-			die("file found, return values from file here.");
-			// TODO Read in id, name, price from cache file
+			// file last modified recent enough, read file in as string
+			$fileContents = file_get_contents($cacheDir."/".$itemId);
+			if (!$fileContents) {  //problem reading file contents...
+				die("error during file_get_contents when reading from cache.");
+			}
+			// Create array of id, name, price based on line breaks
+			$fileContents = explode("\n", $fileContents);
+			$cacheReturnString = "{ \"itemId\" : \"".$fileContents[0]."\", \"itemName\" : \"".$fileContents[1]."\", \"itemPrice\" : \"".$fileContents[2]."\" }";
+			// return the data from the cache
+			die($cacheReturnString);
 		}
 	}
 	// file doesnt exist or is too old to be useful. Either way, clear it
