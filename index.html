@@ -44,25 +44,31 @@ function initiateGlobals() {
 	header = document.getElementById('header');
 	siteTitle = document.getElementById('siteTitle');
 	mainSection = document.getElementById('mainSection');
-	prodIdInput = document.getElementById('prodIdInput');
-	prodName = document.getElementById('prodName');
-	prodPrice = document.getElementById('prodPrice');
+	prodIdInput0 = document.getElementById('prodIdInput0');
+	prodIdInput1 = document.getElementById('prodIdInput1');
+	prodIdInput2 = document.getElementById('prodIdInput2');
+	ajaxResponseInput0 = document.getElementById('ajaxResponseInput0');
 	myBody = document.getElementById('myBody');
 }
 function getProdInfo(prodId) {
-	console.log("getProdInfo() starting");
-	if (prodIdInput.value.length() < 5) {
-		return;
-	}
-	var xmlhttp=new XMLHttpRequest();
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			//prodIdInput.value=xmlhttp.responseText;
-			JSON.parse("xmlhttp.responseText);
+	// if (prodId.length() != 10) { return; }
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		// if script available
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			console.log("AJAX response text received: " + xmlhttp.responseText);
+			ajaxResponseInput0.value = xmlhttp.responseText;
 		}
 	}
-	xmlhttp.open("GET","priceChecker.php?itemId="+prodId,true);
+	xmlhttp.open("GET","pricechecker.php?itemId=" + prodId,true);
 	xmlhttp.send();
+}
+function fillTableCells(inputElement) {
+	var rowNum = inputElement.id.match(/\d{1,}/g);
+	if (rowNum == null) { return; }
+	var prodNameId = "prodName" + rowNum;
+	var prodPriceId = "prodPrice" + rowNum;
+	// document.getElementById(prodNameId).innerHTML = getProdInfo(inputElement.value);
 }
 </script>
 
@@ -76,7 +82,6 @@ function getProdInfo(prodId) {
 	<div id="siteTitle" class="largest bold">Amazon Price Checker</div>
 </div>
 
-
 <table border='1' cellpadding='5'>
 	<tr>
 		<th>Input Amazon Product Id</th>
@@ -84,9 +89,19 @@ function getProdInfo(prodId) {
 		<th>Product Price</th>
 	</tr>
 	<tr>
-		<td><input type="text" id="prodIdInput" class="prodIdInput" placeholder="Amazon Product Id" onchange="getProdInfo(this.value);"></td>
-		<td id="prodName"></td>
-		<td id="prodPrice"></td>
+		<td><input type="text" id="prodIdInput0" class="prodIdInput" placeholder="Amazon Product Id"><input id="ajaxResponseInput0" onchange="alert(this.value)"></td>
+		<td id="prodName0"></td>
+		<td id="prodPrice0"></td>
+	</tr>
+	<tr>
+		<td><input type="text" id="prodIdInput1" class="prodIdInput" placeholder="Amazon Product Id"></td>
+		<td id="prodName1"></td>
+		<td id="prodPrice1"></td>
+	</tr>
+	<tr>
+		<td><input type="text" id="prodIdInput2" class="prodIdInput" placeholder="Amazon Product Id"></td>
+		<td id="prodName2"></td>
+		<td id="prodPrice2"></td>
 	</tr>
 </table>
 
